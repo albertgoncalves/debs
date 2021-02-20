@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from numpy import append, arange, empty, full, int32, sqrt
+from numpy import append, arange, empty, full, int32, sqrt, unique
 
 
 class Dbscan:
@@ -42,7 +42,7 @@ class Dbscan:
                     labels[j] = cluster
                     neighbors = self.get_euclidean_neighbor_indices(j)
                     if self.min_size <= len(neighbors):
-                        new_seeds = append(new_seeds, neighbors)
+                        new_seeds = unique(append(new_seeds, neighbors))
                 seeds = new_seeds
         assert (labels != self.UNDEFINED).all()
         return labels
@@ -56,14 +56,15 @@ def main():
     from seaborn import scatterplot, set_style
     from sklearn.datasets import make_blobs, make_circles, make_moons
 
-    epsilon = 0.3
-    min_size = 3
+    epsilon = 0.2
+    min_size = 5
 
+    n = 500
     data = []
     for (i, (points, _)) in enumerate([
-        make_blobs(centers=4),
-        make_circles(factor=0.5, noise=0.01),
-        make_moons(noise=0.0275),
+        make_blobs(n, centers=4),
+        make_circles(n, factor=0.5, noise=0.0375),
+        make_moons(n, noise=0.05),
     ]):
         points = (points - points.mean()) / points.std()
         labels = Dbscan(points, epsilon, min_size).get_labels()

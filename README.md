@@ -9,7 +9,7 @@ Needed things
 Quick start
 ---
 ```
-$ ./shell
+$ nix-shell
 [nix-shell:path/to/debs]$ python src/main.py && feh out/plot.png
 ```
 

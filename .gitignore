@@ -1,0 +1,8 @@
+*
+!.gitignore
+!README.md
+!cover.png
+!*.nix
+!.shellhook
+!src/
+!*.py

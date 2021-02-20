@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from numpy import append, arange, empty, full, int32, sqrt, unique
+from numpy import append, arange, empty, full, int16, sqrt, unique
 
 
 class Dbscan:
@@ -12,7 +12,8 @@ class Dbscan:
         self.epsilon = epsilon
         self.min_size = min_size
         self.n = len(points)
-        self.ix = arange(self.n, dtype=int32)
+        assert self.n < 0x7FFF
+        self.ix = arange(self.n, dtype=int16)
 
     def get_euclidean_neighbor_indices(self, i):
         delta = self.points - self.points[i]
@@ -20,7 +21,7 @@ class Dbscan:
         return self.ix[distance <= self.epsilon]
 
     def get_labels(self):
-        labels = full(self.n, self.UNDEFINED)
+        labels = full(self.n, self.UNDEFINED, dtype=int16)
         cluster = 0
         for i in range(self.n):
             if labels[i] != self.UNDEFINED:
@@ -33,7 +34,7 @@ class Dbscan:
             labels[i] = cluster
             seeds = neighbors[neighbors != i]
             while len(seeds) != 0:
-                new_seeds = empty(0, dtype=int32)
+                new_seeds = empty(0, dtype=int16)
                 for j in seeds:
                     if labels[j] == self.NOISE:
                         labels[j] = cluster
@@ -58,7 +59,6 @@ def main():
 
     epsilon = 0.2
     min_size = 5
-
     n = 500
     data = []
     for (i, (points, _)) in enumerate([
